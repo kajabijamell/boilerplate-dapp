@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require('webpack');
 
 module.exports = {
   entry: "./src/index.js",
@@ -17,14 +18,30 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx"] },
+  resolve: { 
+    extensions: ["*", ".js", ".jsx"],
+    alias: {
+      process: "process/browser"
+    },
+    fallback: {
+      'crypto': require.resolve("crypto-browserify"),
+      'stream': require.resolve("stream-browserify"),
+      'http': require.resolve("stream-http"),
+      'https': require.resolve("https-browserify"),
+      'os': require.resolve("os-browserify/browser")
+    }
+  },
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "/dist/",
     filename: "bundle.js"
   },
   devServer: {
-    port: 3010,
-    hot: 'only'
-  }
+    port: 3000,
+    hot: true
+  },
+  plugins: [
+    new webpack.ProvidePlugin({ process: 'process/browser' }),
+    new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
+  ],
 };
