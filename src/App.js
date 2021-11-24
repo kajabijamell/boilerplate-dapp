@@ -8,13 +8,6 @@ const App = () => {
   const { authenticate, isAuthenticated, user } = useMoralis();
   const Web3Api = useMoralisWeb3Api()
 
-  const fetchBlock = async () => {
-    const result = await Web3Api.native.getBlock({
-      block_number_or_hash: '100000'
-    })
-    console.log(result)
-  }
-
   if (!isAuthenticated) {
     return (
       <div>
@@ -23,7 +16,6 @@ const App = () => {
     );
   }
 
-  fetchBlock();
 
   return (
     <div>
