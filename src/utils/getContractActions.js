@@ -29,8 +29,8 @@ export const getContractActions = (abi) => {
           methodOutputs.push(
             {
               key: j,
-              name: output.name || '(unnamed)',
-              type: output.type || '',
+              name: output.name,
+              type: output.type,
             }
           )
         })
