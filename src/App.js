@@ -1,27 +1,14 @@
 import React, { useState } from 'react'
-import { useMoralis, useMoralisWeb3Api } from "react-moralis"
-import { getContractActions } from "./utils/getContractActions"
+import { useMoralis, useMoralisWeb3Api } from 'react-moralis'
+import { getContractActions } from './utils/getContractActions'
 
 const App = () => {
-  const  ether = require('etherscan-api').init(process.env.REACT_APP_ETHER_API_KEY)
   const { authenticate, isAuthenticated, user, logout, auth } = useMoralis()
+  const address = '0xA4631A191044096834Ce65d1EE86b16b171D8080'
 
-  // retrieve abi using etherscan-api
-  const getAbi = ether.contract.getabi('0xA4631A191044096834Ce65d1EE86b16b171D8080')
-
-  getAbi
-    .then(function(response){
-      const abi = response.result
-
-      getContractActions(abi).then((contractMethods) => {
-        console.log('contract actions', contractMethods)
-      }).catch((error) => {
-        console.log('Something went wrong with getCalls:', error)
-      })
-    })
-    .catch((error) => {
-      console.log('Something went wrong with getAbi:', error)
-    })
+  getContractActions(address).then((methods) => {
+    console.log(methods)
+  });
 
   if (!isAuthenticated) {
     return (
@@ -33,7 +20,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Welcome {user.get("username")}</h1>
+      <h1>Welcome {user.get('username')}</h1>
       <button onClick={() => logout()}>Logout</button>
       {auth.state}
     </div>
