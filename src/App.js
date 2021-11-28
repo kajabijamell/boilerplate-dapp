@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState } from 'react';
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
-
-const  ether = require('etherscan-api').init(process.env.REACT_APP_ETHER_API_KEY);
-var abi = ether.contract.getabi('0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
-abi.then(function(retrievedAbi){
-  console.log(retrievedAbi.result);
-});
+import { getCalls } from "./utils/getCalls";
 
 const App = () => {
+  const  ether = require('etherscan-api').init(process.env.REACT_APP_ETHER_API_KEY);
   const { authenticate, isAuthenticated, user, logout, auth } = useMoralis();
+
+  const getAbi = ether.contract.getabi('0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
+  
+  getAbi
+    .then(function(response){
+      const abi = response.result
+      getCalls(abi).then((viewElements) => {
+        console.log(viewElements);
+      }).catch((error) => {
+        console.log('Something went wrong with getCalls:', error)
+      })
+    })
+    .catch((error) => {
+      console.log('Something went wrong with getAbi:', error)
+    })
 
   if (!isAuthenticated) {
     return (
