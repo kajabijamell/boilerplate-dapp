@@ -56,7 +56,8 @@ export const deconstructAbi = (abi) => {
         sends.push(
           {
             name: method.name,
-            inputs: formInputs
+            inputs: formInputs,
+            payable: payable,
           }
         )
       } else if(method.type === 'event') {
