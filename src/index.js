@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { MoralisProvider } from "react-moralis";
 import App from "./App.js";
-import { MoralisDappProvider } from "./MoralisDappProvider/MoralisDappProvider";
+import { MoralisDappProvider } from "./providers/MoralisDappProvider/MoralisDappProvider";
+import { SmartContractProvider } from "./providers/SmartContractProvider/SmartContractProvider";
 
 const APP_ID = process.env.REACT_APP_MORALIS_API_ID;
 const SERVER_URL = process.env.REACT_APP_MORALIS_SERVER_URL;
@@ -13,7 +14,9 @@ const Application = () => {
     return (
       <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
         <MoralisDappProvider>
-          <App isServerInfo/>
+          <SmartContractProvider>
+            <App />
+          </SmartContractProvider>
         </MoralisDappProvider>
       </MoralisProvider>
     );
