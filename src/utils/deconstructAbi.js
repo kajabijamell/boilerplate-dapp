@@ -1,35 +1,49 @@
-export const deconstructAbi = (abi) => {
+import React from 'react';
+import {
+  Form,
+  Segment,
+  Header,
+  Icon,
+  Button
+} from 'semantic-ui-react';
+
+export const  deconstructAbi = (abi) => {
   
   return new Promise(function (resolve, reject) {
     const methods = []
     const calls = []
     const sends = []
     const events = []
+    const forms = []
 
     const abiObject = JSON.parse(abi)
 
-    abiObject.forEach((method) => {
+    abiObject.forEach((method, i) => {
       methods.push(method)
 
       if (method.stateMutability === 'view') {
         const methodInputs = []
         const methodOutputs = []
 
-        method.inputs.forEach((input) => {
+        method.inputs.forEach((input, j) => {
           methodInputs.push(
-            {
-              name: input.name,
-              type: input.type,
-            }
+            <Form.Input
+              name={method.name}
+              inputindex={j}
+              key={j}
+              inline
+              label={input.name}
+              placeholder={input.type}
+            />
           )
         })
 
-        method.outputs.forEach((output) => {
+        method.outputs.forEach((output, j) => {
           methodOutputs.push(
-            {
-              name: output.name,
-              type: output.type,
-            }
+            <p key={j}>
+              {`${output.name || '(unnamed)'}
+            ${output.type}: ''`}
+            </p>
           )
         })
 
@@ -40,16 +54,41 @@ export const deconstructAbi = (abi) => {
             outputs: methodOutputs
           }
         )
+
+        forms.push(
+          <Segment textAlign="left" key={i}>
+            <Header textAlign="center">
+              {method.name}
+              <Header.Subheader>View</Header.Subheader>
+            </Header>
+            <Form
+              name={method.name}
+              key={i}
+            >
+              <Button floated="right" icon>
+                <Icon name="refresh" />
+              </Button>
+              {methodInputs}
+              {methodOutputs}
+            </Form>
+          </Segment>
+        );
+
       } else if(method.stateMutability !== 'view' && method.type === 'function') {
         const formInputs = []
         const payable = method.stateMutability === 'payable'
 
-        method.inputs.forEach((input) => {
+        method.inputs.forEach((input, j) => {
           formInputs.push(
-            {
-              name: input.name,
-              type: input.type
-            }
+            <Form.Input
+              required
+              name={method.name}
+              key={j}
+              inputindex={j}
+              inline
+              label={input.name}
+              placeholder={input.type}
+            />
           )
         })
 
@@ -60,6 +99,23 @@ export const deconstructAbi = (abi) => {
             payable: payable,
           }
         )
+
+        forms.push(
+          // Make a form, even when there are no inputs
+          <Segment textAlign="left" key={i}>
+            <Header textAlign="center">
+              {method.name}
+            </Header>
+            <Form
+              // onSubmit={this.handleSubmitSend}
+              name={method.name}
+              key={i}
+            >
+              {formInputs}
+              <Form.Button color="blue" content="Submit" />
+            </Form>
+          </Segment>
+        );
       } else if(method.type === 'event') {
         events.push(
           {
@@ -78,6 +134,7 @@ export const deconstructAbi = (abi) => {
       calls: calls,
       sends: sends,
       events: events,
+      forms: forms
     }
 
     resolve(contractActions)

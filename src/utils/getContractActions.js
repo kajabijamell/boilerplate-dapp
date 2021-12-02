@@ -8,7 +8,12 @@ export const getContractActions = async (address) => {
     const response = await getAbi
     const abi = response.result
     const contractMethods = await deconstructAbi(abi)
-    return contractMethods
+
+    const contractData = {
+      contractMethods: contractMethods,
+      abi: abi,
+    }
+    return contractData
   } catch (error) {
     console.error('Something went wrong with retrieving contract actions:', error)
   }
